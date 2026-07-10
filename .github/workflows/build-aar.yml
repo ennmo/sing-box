@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version_tag:
+        description: 'v1.13.14'
         required: true
         default: 'v1.13.14'
 
@@ -24,7 +25,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: '1.24'
 
       - name: Set up Android NDK
         uses: nttld/setup-ndk@v1
@@ -40,11 +41,11 @@ jobs:
       - name: Fetch Go modules & Build AAR
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          GOPROXY: https://proxy.golang.org,direct
+          GOPROXY: direct
         run: |
           go get golang.org/x/mobile@latest
           
-          gomobile bind -v -target=android -androidapi=21 -javapkg=libbox ./experimental/libbox
+          gomobile bind -v -target=android -androidapi=21 -javapkg=libbox -ldflags "-checklinkname=0" ./experimental/libbox
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
