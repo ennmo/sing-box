@@ -40,8 +40,12 @@ jobs:
       - name: Fetch Go modules & Build AAR
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          GOPROXY: https://proxy.golang.org,direct
         run: |
-          go mod tidy
+          echo -e "package libbox\nimport _ \"golang.org/x/mobile/bind\"" > ./experimental/libbox/dummy.go
+          
+          go get golang.org/x/mobile@latest
+          
           gomobile bind -v -target=android -androidapi=21 -javapkg=libbox ./experimental/libbox
 
       - name: Upload Artifact
