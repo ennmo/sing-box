@@ -41,6 +41,7 @@ jobs:
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
+          go get golang.org/x/mobile@latest
           go mod tidy
           gomobile bind -v -target=android -androidapi=21 -javapkg=libbox ./experimental/libbox
 
