@@ -33,19 +33,17 @@ jobs:
         with:
           ndk-version: r26b
 
-      - name: Install GoMobile
+      - name: Install Official SagerNet GoMobile
         run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
+          go install github.com/sagernet/gomobile@latest
           gomobile init
 
-      - name: Fetch Go modules & Build AAR
+      - name: Build AAR using official script
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          GOPROXY: direct
+          GOPROXY: https://proxy.golang.org,direct
         run: |
-          go get golang.org/x/mobile@latest
-          
-          gomobile bind -v -target=android -androidapi=21 -javapkg=libbox -ldflags "-checklinkname=0" ./experimental/libbox
+          go run ./cmd/internal/build_libbox -target android
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
